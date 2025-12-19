@@ -5,12 +5,15 @@ const cors = require("cors");
 const app = express();
 app.use(cors());
 
-app.get("/spotify/recently-played", (req, res) => {
-  res.json({
-    title: "Mock Song",
-    artist: "Mock Artist",
-    albumArt: ""
-  });
+const { getRecentlyPlayed } = require("./spotify");
+
+app.get("/spotify/recently-played", async (req, res) => {
+  try {
+    const data = await getRecentlyPlayed();
+    res.json(data);
+  } catch (err) {
+    res.status(500).json({ error: "Spotify API error" });
+  }
 });
 
 app.listen(3001, () => {
